@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using apiDatasheets.Models;
 
@@ -10,9 +11,11 @@ using apiDatasheets.Models;
 namespace apiDatasheets.Migrations
 {
     [DbContext(typeof(DataSheetsContext))]
-    partial class DataSheetsContextModelSnapshot : ModelSnapshot
+    [Migration("20250123023030_Filename")]
+    partial class Filename
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
