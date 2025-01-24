@@ -1,23 +1,21 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using apiDatasheets.DTOs;
 using apiDatasheets.Models;
-using apiDatasheets.DTOs;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
-using apiDatasheets.Migrations;
 
 namespace apiDatasheets.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DatasheetController(DataSheetsContext context) : ControllerBase
+    public class DatasheetController(DatasheetContext context) : ControllerBase
     {
-        private readonly DataSheetsContext _context = context;
+        private readonly DatasheetContext _context = context;
 
 
         [HttpGet]
         public async Task<IEnumerable<DatasheetDto>> Get() =>
-            await _context.DataSheets.Select(f => new DatasheetDto
+            await _context.Datasheets.Select(f => new DatasheetDto
             {
                 Id = f.Id,
                 Name = f.Name,
@@ -29,7 +27,7 @@ namespace apiDatasheets.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<DatasheetDto>> GetById(int id)
         {
-            var datasheet = await _context.DataSheets.FindAsync(id);
+            var datasheet = await _context.Datasheets.FindAsync(id);
             if (datasheet == null)
             {
                 return NotFound();
@@ -47,7 +45,7 @@ namespace apiDatasheets.Controllers
         [HttpPost]
         public async Task<ActionResult<DatasheetDto>> Add(DatasheetDtoInsert datasheetDtoInsert)
         {
-            var datasheet = new DataSheet()
+            var datasheet = new Datasheet()
             {
                 Name = datasheetDtoInsert.Name,
                 Description = datasheetDtoInsert.Description,
@@ -72,7 +70,7 @@ namespace apiDatasheets.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<DatasheetDto>> Update(int id, DatasheetDtoUpdate datasheetUpdateDto)
         {
-            var datasheet = await _context.DataSheets.FindAsync(id);
+            var datasheet = await _context.Datasheets.FindAsync(id);
             if (datasheet == null)
             {
                 return NotFound();
@@ -95,7 +93,7 @@ namespace apiDatasheets.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var beer = await _context.DataSheets.FindAsync(id);
+            var beer = await _context.Datasheets.FindAsync(id);
             if (beer == null)
             {
                 return NotFound();

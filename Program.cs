@@ -1,14 +1,14 @@
-using Microsoft.EntityFrameworkCore;
 using apiDatasheets.Models;
+using Microsoft.EntityFrameworkCore;
 
 bool InProduction = true;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<DataSheetsContext>(options =>
+builder.Services.AddDbContext<DatasheetContext>(options =>
 //options.UseSqlServer(builder.Configuration.GetConnectionString("DatasheetsConnection")));
-options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllers();
 
@@ -18,7 +18,7 @@ if (InProduction is false)
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 }
-else 
+else
 {
     var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
     builder.WebHost.UseUrls($"http://*:{port}");
