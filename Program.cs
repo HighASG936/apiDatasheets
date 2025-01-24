@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using apiDatasheets.Models;
 
-bool InProduction = false;
+bool InProduction = true;
 
 var builder = WebApplication.CreateBuilder(args);
 
