@@ -31,7 +31,7 @@ else
     builder.WebHost.UseUrls($"http://*:{port}");
 }
 
-// Configure CORS policy to allow all origins, methods, and headers
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -43,6 +43,7 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline
 if (!InProduction)
