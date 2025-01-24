@@ -20,12 +20,6 @@ if (!InProduction)
 }
 else
 {
-    // Configure forwarded headers for proxies in production
-    builder.Services.Configure<ForwardedHeadersOptions>(options =>
-    {
-        options.ForwardedHeaders = ForwardedHeaders.All;
-    });
-
     // Set port for production environment
     var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
     builder.WebHost.UseUrls($"http://*:{port}");
@@ -42,15 +36,21 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Configure forwarded headers for proxies in production
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.All;
+});
+
 var app = builder.Build();
 
 
 // Configure the HTTP request pipeline
-if (!InProduction)
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (!InProduction)
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
 
 // Apply forwarded headers middleware for proxies
 app.UseForwardedHeaders();
