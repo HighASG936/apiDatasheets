@@ -8,49 +8,60 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<DatasheetContext>(options =>
-//options.UseSqlServer(builder.Configuration.GetConnectionString("DatasheetsConnection")));
-options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllers();
 
-if (InProduction is false)
+if (!InProduction)
 {
-    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    // Configure Swagger for development environment
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 }
 else
 {
+    // Configure forwarded headers for proxies in production
     builder.Services.Configure<ForwardedHeadersOptions>(options =>
     {
         options.ForwardedHeaders = ForwardedHeaders.All;
     });
 
-
+    // Set port for production environment
     var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
     builder.WebHost.UseUrls($"http://*:{port}");
 }
 
+// Configure CORS policy to allow all origins, methods, and headers
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
+// Configure the HTTP request pipeline
+if (!InProduction)
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-app.UseForwardedHeaders(); // Añadir este middleware antes de cualquier manejo de rutas
+// Apply forwarded headers middleware for proxies
+app.UseForwardedHeaders();
+
+// Apply CORS policy
+app.UseCors("AllowAll");
+
 app.UseRouting();
 app.UseAuthorization();
+
 app.MapControllers();
-
-
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
 
 app.Run();
