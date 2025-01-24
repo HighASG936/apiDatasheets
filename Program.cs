@@ -1,4 +1,5 @@
 using apiDatasheets.Models;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 
 bool InProduction = true;
@@ -20,6 +21,12 @@ if (InProduction is false)
 }
 else
 {
+    builder.Services.Configure<ForwardedHeadersOptions>(options =>
+    {
+        options.ForwardedHeaders = ForwardedHeaders.All;
+    });
+
+
     var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
     builder.WebHost.UseUrls($"http://*:{port}");
 }
@@ -27,11 +34,18 @@ else
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+app.UseForwardedHeaders(); // Añadir este middleware antes de cualquier manejo de rutas
+app.UseRouting();
+app.UseAuthorization();
+app.MapControllers();
+
+
 
 app.UseHttpsRedirection();
 
