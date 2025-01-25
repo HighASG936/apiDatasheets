@@ -20,9 +20,7 @@ if (!InProduction)
 }
 else
 {
-    // Set port for production environment
-    var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-    builder.WebHost.UseUrls($"http://*:{port}");
+    builder.WebHost.UseUrls($"http://*:8080");
 }
 
 
@@ -40,6 +38,8 @@ builder.Services.AddCors(options =>
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.All;
+    options.KnownProxies.Clear();
+    options.KnownNetworks.Clear();
 });
 
 var app = builder.Build();
@@ -63,6 +63,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseHttpsRedirection();
+if (!InProduction)
+{
+    app.UseHttpsRedirection();
+}
 
 app.Run();
