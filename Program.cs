@@ -37,7 +37,7 @@ builder.Services.AddCors(options =>
 // Configure forwarded headers for proxies in production
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
-    options.ForwardedHeaders = ForwardedHeaders.All;
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
     options.KnownProxies.Clear();
     options.KnownNetworks.Clear();
 });
